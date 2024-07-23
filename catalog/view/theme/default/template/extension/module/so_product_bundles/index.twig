@@ -1,0 +1,122 @@
+{% if moduleData.Enabled == 'yes' and bundles|length >0 %}
+	{% if moduleData.CustomCSS %} 
+        <style>
+			{{ moduleData.CustomCSS|escape }}
+        </style>
+    {% endif %}
+	
+	{% if moduleData.WrapInWidget == 'yes' %} 
+		<div class="panel panel-default">
+			<div class="panel-heading">
+                <h3 class="panel-title">{{ moduleData.WidgetTitle[language_id] }}</h3>
+            </div>
+			<div class="panel-body">
+	{% else %}   
+		<h3><strong>{{ moduleData.WidgetTitle[language_id] }}</strong></h3><br />
+	{% endif %} 
+               
+    {% for bundle in bundles %} 
+        <div class="soproductbundles-wrap">
+            <div class="soproductbundles-content">
+                {% if bundle.name %} 
+                    <div class="soproductbundles-name">
+                        <a href="{{ bundle.url }}">{{ bundle.name }}</a>
+                    </div>
+                {% endif %} 
+                {% if moduleData.DescriptionWidgetEnabled and moduleData.DescriptionWidgetEnabled == 'yes' %} 
+                <div class="soproductbundles-desc">
+                    {{ bundle.description }}
+                </div>
+                {% endif %} 
+                <div class="soproductbundles-list-products">
+                    {% for product in bundle.products %} 
+                        {% if not loop.first %}  
+                            <div class="soproductbundles-plus"><i class="fa fa-plus"></i></div>
+                        {% endif %} 
+                        <div class="product-layout">
+                            <div class="product-thumb transition">
+                                {% if product.quantity > 1 %} 
+                                    <span class="pb_quantity">{{ product.quantity }}x</span>
+                                {% endif %} 
+                                
+                                {% if product.thumb %} 
+                                    <div class="image">
+                                        <a href="{{ product.href }}"><img class="img-responsive" src="{{ product.thumb }}" alt="{{ product.name }}" /></a>
+                                    </div>
+                                {% endif %}
+                                 
+                                <div class="caption">
+                                    <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+                                    <p class="price">
+                                        {% if product.price %} 
+                                            {% if not product.special %} 
+                                                {% set Pprice = product.price %}
+                                            {% else %}   
+                                                {% set Pprice = product.special %}
+                                            {% endif %} 
+                                        {% endif %} 
+                                        <strong>{{ Pprice }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="soproductbundles_info">
+                        <strong><span class="PB_bundle_total_price">{{ ProductBundles_BundlePrice }} {{ bundle.final_price }}</span></strong>
+                        <br />
+                        <strong><span>{{ ProductBundles_YouSave }} {{ bundle.discount_value }}!</span></strong>
+                        <br /><br />
+                        <a onClick="cart.addBundle({{ bundle.id }}, {{ bundle.product_options }});" class="btn btn-primary btn-lg text-center" style="text-transform: uppercase;"><i class="fa fa-shopping-cart"></i> {{ text_add_to_cart }}</a>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    {% endfor %}
+
+    {% if moduleData.ShowAllBundlesButton and moduleData.ShowAllBundlesButton == 'yes' %} 
+    <div class="pull-right">
+        <a href="{{ listing_url }}" class="btn btn-primary">{{ text_view_all }}</a>
+    </div>
+    <div class="clearfix"></div>
+    {% endif %} 
+                
+    {% if moduleData.WrapInWidget == 'yes' %} 
+            </div> <!-- .panel-body -->
+        </div>
+    {% else %}   
+        <br />
+    {% endif %} 
+    
+    
+    <script type="text/javascript"><!--
+        var cart = {
+            'addBundle': function(bundle_id, options) {
+                if (options) {
+                    $.fancybox.open({
+                        href: 'index.php?route={{ modulePath }}/product_with_options&bundle_id=' + bundle_id,
+                        type: 'ajax',
+                        padding: 20,
+                        openEffect: 'elastic',
+                        openSpeed: 150,
+                        fitToView: true,
+                        closeBtn: true
+                    });
+                } else {
+                    $.ajax({
+                        url: 'index.php?route={{ modulePath }}/add&bundle_id=' + bundle_id,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(json) {
+                            if (json['error']) {
+                                alert("There is a problem with the form. Please try again later.");
+                            }
+                            if (json['success']) {
+                                window.location = "{{ cart_url|escape }}";  
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    //--></script>
+{% endif %}  

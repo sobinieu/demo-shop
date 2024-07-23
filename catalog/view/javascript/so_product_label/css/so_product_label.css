@@ -1,0 +1,22 @@
+.product-thumb .image, .thumbnails > li {position: relative;}
+.so_sticker img {position: absolute; z-index: 99;}
+.so_sticker img.ps-topleft {top: 0; left: 0;}
+.so_sticker img.ps-topcenter {top: 0; left: 0; right: 0; margin-left: auto; margin-right: auto;}
+.so_sticker img.ps-topright {top: 0; right: 0;}
+.so_sticker img.ps-bottomleft {bottom: 0; left: 0;}
+.so_sticker img.ps-bottomcenter {bottom: 0; left: 0; right: 0; margin-left: auto; margin-right: auto;}
+.so_sticker img.ps-bottomright {bottom: 0; right: 0;}
+.so_sticker img.ps-middleleft {left: 0; top: 0; bottom: 0; margin-top: auto; margin-bottom: auto;}
+.so_sticker img.ps-middlecenter {left: 0; top: 0; right: 0; bottom: 0; margin: auto;}
+.so_sticker img.ps-middleright {right: 0; top: 0; bottom: 0; margin-top: auto; margin-bottom: auto;}
+
+.so_sticker .label-text {padding: 5px 8px; position: absolute; display: inline-block; z-index: 99; /*width: 120px;*/ /*height: 45px;*/ text-align: center; line-height: 100%; border-radius: 3px;}
+.so_sticker .label-text.ps-topleft {top: 0; left: 0;}
+.so_sticker .label-text.ps-topcenter {top: 0; left: 0; right: 0; margin-left: auto; margin-right: auto;}
+.so_sticker .label-text.ps-topright {top: 0; right: 0;}
+.so_sticker .label-text.ps-bottomleft {bottom: 0; left: 0;}
+.so_sticker .label-text.ps-bottomcenter {bottom: 0; left: 0; right: 0; margin-left: auto; margin-right: auto;}
+.so_sticker .label-text.ps-bottomright {bottom: 0; right: 0;}
+.so_sticker .label-text.ps-middleleft {left: 0; top: 0; bottom: 0; margin-top: auto; margin-bottom: auto;}
+.so_sticker .label-text.ps-middlecenter {left: 0; top: 0; right: 0; bottom: 0; margin: auto;}
+.so_sticker .label-text.ps-middleright {right: 0; top: 0; bottom: 0; margin-top: auto; margin-bottom: auto;}

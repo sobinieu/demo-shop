@@ -1,0 +1,229 @@
+{{ header }}
+{{ column_left }}
+
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %} 
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %} 
+            </ul>
+            <div class="pull-right">
+                <button type="button" data-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-product').toggleClass('hidden-sm hidden-xs');" class="btn btn-default hidden-md hidden-lg"><i class="fa fa-filter"></i></button>
+                <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                <button type="submit" form="form-product" formaction="{{ copy }}" data-toggle="tooltip" title="{{ button_copy }}" class="btn btn-default"><i class="fa fa-copy"></i></button>
+                <button type="button" form="form-product" formaction="{{ delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-product').submit() : false;"><i class="fa fa-trash-o"></i></button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+  
+      <div class="container-fluid">
+        {% if not total_status %} 
+        <div class="alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4>{{ text_total_text}}</h4>
+            <p>{{ text_total_text_helper }}</p><div style="height:5px;"></div>
+            <a class="btn btn-danger" href="{{ total_url }}">{{ text_total_button }}</a>
+        </div>
+        {% endif %}
+         
+        {% if error_warning %} 
+            <div class="alert alert-danger autoSlideUp"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %} 
+        
+        {% if success %}
+            <div class="alert alert-success autoSlideUp"><i class="fa fa-check-circle"></i> {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+            <script>$('.autoSlideUp').delay(3000).fadeOut(600, function(){ $(this).show().css({'visibility':'hidden'}); }).slideUp(600);</script>
+        {% endif %}
+
+        <div class="row">
+            <div id="filter-product" class="col-md-3 col-md-push-9 col-sm-12 hidden-sm hidden-xs">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-filter"></i> {{ text_filter }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="input-name">{{ text_name }}</label>
+                            <input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" />
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="filter_product_id" value="">
+                            <label class="control-label" for="input-products">{{ text_products }}</label>
+                            <input type="text" class="form-control" name="filter_product" value="{{ filter_product }}" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="input-discount_value">{{ text_discount_value }}</label>
+                            <input type="text" class="form-control" name="filter_discount" value="{{ filter_discount }}" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="input-filter_status">{{ text_status }}</label>
+                            <select class="form-control" name="filter_status">
+                                <option value="*" {{ filter_status  ==  '*' ? 'selected="selected"' : '' }}>{{ text_all }}</option>
+                                <option value="1" {{ filter_status  ==  '1' ? 'selected="selected"' : '' }}>{{ text_enabled }}</option>
+                                <option value="0" {{ filter_status  ==  '0' ? 'selected="selected"' : '' }}>{{ text_disabled }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i> {{ button_filter }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-md-pull-3 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-list"></i> {{ text_bundles }}</h3>
+                        <div class="pull-right">
+                            <div class="storeSwitcherWidget">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">&nbsp;&nbsp;{{ store.name }}{% if store.store_id == 0 %} <strong>({{ text_default }})</strong> {% endif %}&nbsp;<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% for st in stores %} 
+                                        <li><a href="index.php?route={{ modulePath }}&store_id={{ st.store_id }}&{{ token_addon }}">{{ st.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-product">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></th>
+                                            <th>{{ text_name }}</th>
+                                            <th>{{ text_products }}</th> 
+                                            <th>{{ text_discount_value }}</th> 
+                                            <th>{{ text_status }}</th> 
+                                            <th>{{ text_date_added }}</th>
+                                            <th>{{ text_date_modified }}</th>
+                                            <th class="text-center">{{ text_action }}</th> 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if sources|length > 0 %}   
+                                            {% for index, result in sources %}  
+                                            <tr> 
+                                                <td class="text-center">
+                                                    <input type="checkbox" name="selected[]" value="{{ result.id }}" />
+                                                </td>
+                                                <td><a class="btn btn-link" href="{{ result.edit }}">{{ result.name }}</a></td>
+                                                <td>{{ result.products }}</td>
+                                                <td>
+                                                    {{ result.discount }}
+                                                    {% if result.discount_type == '1' %} 
+                                                        {{ config_currency }}
+                                                    {% else %}   
+                                                        %
+                                                    {% endif %} 
+                                                </td>
+                                                <td>
+                                                    {% if result.enabled %} 
+                                                    <span class="label label-bundle label-success">{{ result.status }}</span>  
+                                                    {% else %}   
+                                                    <span class="label label-bundle label-danger">{{ result.status }}</span>  
+                                                    {% endif %} 
+                                                </td> 
+                                                <td>{{ result.date_added }}</td>
+                                                <td>{{ result.date_modified }}</td>
+                                                <td class="text-right">
+                                                    <a href="{{ result.edit }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                </td> 
+                                            </tr> 
+                                         {% endfor %}   
+                                         {% else %}   
+                                            <tr>
+                                                <td colspan="8" class="text-center">{{ text_no_bundles }}</td>
+                                            </tr>
+                                         {% endif %} 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col-sm-6 text-left">{{ pagination }}</div>
+                            <div class="col-sm-6 text-right">{{ results }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript"><!--
+    $('#button-filter').on('click', function() {
+        var url = '';
+
+        var filter_name = $('input[name=\'filter_name\']').val();
+
+        if (filter_name) {
+            url += '&filter_name=' + encodeURIComponent(filter_name);
+        }
+
+        var filter_product = $('input[name=\'filter_product\']').val();
+
+        if (filter_product) {
+            url += '&filter_product=' + encodeURIComponent(filter_product);
+        }
+
+        var filter_product_id = $('input[name=\'filter_product_id\']').val();
+
+        if (filter_product_id) {
+            url += '&filter_product_id=' + encodeURIComponent(filter_product_id);
+        }
+
+        var filter_discount = $('input[name=\'filter_discount\']').val();
+
+        if (filter_discount) {
+            url += '&filter_discount=' + encodeURIComponent(filter_discount);
+        }
+
+        var filter_status = $('select[name=\'filter_status\']').val();
+
+        if (filter_status !== '') {
+            url += '&filter_status=' + encodeURIComponent(filter_status);
+        }
+
+        location = 'index.php?route={{ modulePath }}&user_token={{ user_token }}' + url;
+    });
+
+    $('input[name=\'filter_product\']').autocomplete({
+        delay: 500,
+        source: function(request, response) {
+            $.ajax({
+                url: 'index.php?route={{ modulePath }}/autocomplete_products&user_token={{ user_token }}&store_id={{ store.store_id }}&filter_name=' +  encodeURIComponent(request) ,
+                dataType: 'json',
+                success: function(json) {       
+                    response($.map(json, function(item) {
+                        return {
+                            label: item['name'],
+                            value: item['product_id'],
+                        }
+                    }));
+                }
+            });
+        }, 
+        select: function(item) {
+            chosenProduct = item;
+
+            $(this).val(item['label']); 
+            $('input[name=\'filter_product_id\']').val(item['value']);
+        }
+    });
+
+    $('body').delegate('input[name=\'filter_product\']', 'keyup', (function(e) {
+        if ($(this).val() == "") {
+            $('input[name=\'filter_product_id\']').val('');
+        }  
+    }));
+    //--></script> 
+</div>
+{{ footer }}

@@ -1,0 +1,218 @@
+
+
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/*===============================================
+    [SASS DIRECTORY ]
+    
+    [1] BLOCK HEADER
+
+    
+==============================================*/
+@media(min-width: 1200px){
+    .common-home .typeheader-3{ position: absolute; top: 0; #{$left}: 0; z-index: 99; width: 100%; }
+}
+
+.typeheader-3{ background-color: rgba(0,0,0,0.6); border-bottom: 1px solid #999fa6;
+    // MENU ON TOP
+    &.navbar-compact{
+        .so-topbar{
+            display: none;
+        }      
+        .container-megamenu.horizontal ul.megamenu > li > a strong img{
+            display: none;
+        }
+    }  
+    .header-middle{
+        clear: both;
+        padding: 10px 0;
+        .middle3{ padding-top: 10px; }
+        .middle2{ padding-top: 4px;  }
+    }
+    .middle3{ float: $right; }
+    .log{ float: $left;
+        position: relative; padding: 0 35px; margin-#{$right}: 35px;
+        &:before{ position: absolute; content: ""; width: 1px; height: 30px; background-color: rgba(193,193,193,0.3); top: -3px; left: 0; }
+        &:after{ position: absolute; content: ""; width: 1px; height: 30px; background-color: rgba(193,193,193,0.3); top: -3px; right: 0; }
+        a{ font-size: 16px; color: #fff; }
+        svg{ fill: #fff; float: $left; margin-#{$right}: 8px; }
+    }
+    @media (min-width: 1200px){ .main-menu-w{ position: relative; padding-#{$right}: 165px; } }
+    /*=====SEARCH ======*/
+    .search-header-w{
+        position: relative; margin-#{$right}: 35px;
+        float: $left;         
+        .icon-search{  padding: 0 5px;                          
+            i{ font-size: 24px; color: #fff; }            
+            &:hover{
+                cursor: pointer;                
+            }
+            &.active{
+                i:before{ content: "\e680"; }
+            }
+        }
+        #sosearchpro .search{
+            display: none;
+            position: absolute; z-index: 99;
+            top: 100%;
+            #{$right}: -1px; #{$left}: auto;
+            margin-#{$right}: 0;
+            padding: 0;
+            width: 270px;
+            button{
+                padding: 0 15px;
+            }
+        }
+    }
+    #sosearchpro{
+        .text-keyword{ padding-#{$left}: 20px; margin-top: 5px;
+            .title-key b{ font-weight: 400; color: #545454; }
+            .item-key a{ color: #898989; text-decoration: underline; }
+        }
+        .search{
+            position: relative;
+            margin: 0; 
+            border: 1px solid #ddd; height: 40px;
+            .select_category{
+                display: none;
+            }
+            button{
+                position: absolute;
+                top: 1px;
+                #{$right}: 1px;
+                height: 36px;
+                text-align: center;
+                line-height: 40px;
+                padding: 0 8px;
+                font-size: 14px;
+                color: #ddd; 
+                border-radius: 0;
+                background-color: #fff;
+                i{
+                    font-size: 16px;
+                    color: #444; 
+                }
+                span{ display: none; }
+            }
+            
+            input{
+                border: none;
+                border-radius: 0px;       
+                z-index: 0;
+                height: 38px;
+                padding-#{$left}: 20px;
+                font-size: 12px;
+                width: 100%;
+                background-color: $background;
+                color: #fff;
+                &::-moz-placeholder {
+                    color: #fff;
+                    opacity: 1; 
+                }
+                &:-ms-input-placeholder { color: #fff; } 
+                &::-webkit-input-placeholder  { color: #fff; } 
+                &:focus{
+                    z-index: 0;
+                }
+            }
+            
+        }
+    } 
+    .search-header-w #sosearchpro .search.nav-open{
+        display: block;
+    }
+    .search-screen{
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(255,255,255,0);
+        //z-index: -1;
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+    }
+    .search-screen.nav-open{
+        opacity: 1; visibility: visible; z-index: 90;
+    }
+  
+
+    /*BLOCK CART*/
+    .shopping_cart{
+        float: $left;
+        position: relative;
+        .btn-shopping-cart .top_cart{
+            position: relative;
+            .icon-c{ float: $left;
+                svg{ fill: #fff; margin: side-values(2px 0 0 0); }                
+            }
+            .shopcart-inner{
+                float: $left;
+                color: #fff;
+                padding-#{$left}: 6px;       
+                position: relative;
+                
+                .text-shopping-cart{
+                    font-size: 14px;
+                    margin-top: 0px;
+                    margin-bottom: 7px;
+                    line-height: 40px; margin: 0;
+                    color: #fff; font-weight: 500;
+                    display: none;
+                }
+                .total-shopping-cart{
+                    font-size: 16px; color: #fff;
+                    .items_carts{
+                        display: none;
+                    }
+                    .items_cart{
+                        
+                    }
+                }
+            } 
+                
+        } 
+        .dropdown-menu{ top: 100%; #{$right}: -15px; #{$left}: auto;
+            color: #666;
+        }
+        .shoppingcart-box:before{right: 50px;}
+    }
+
+    /*MENU MEGA*/
+    .megamenu-style-dev{
+        .navbar-default{ background: transparent; }
+    }
+
+    .container-megamenu.horizontal ul.megamenu > li > a{ margin: 0;
+        font-weight: 500; font-size: 16px; color: #fff; background-color: transparent; text-transform: uppercase;
+        strong{ font-weight: 500; }
+    }
+    .container-megamenu.horizontal ul.megamenu > li.with-sub-menu > a::after{ display: none; }
+  
+}
+
+.common-home .typeheader-3 .container-megamenu.horizontal ul.megamenu > li.home > a{ background-color: transparent; }

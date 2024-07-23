@@ -1,0 +1,259 @@
+{{ header }}
+{{ column_left }}
+
+<div id="content">
+	<div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %} 
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %} 
+            </ul>
+            <div class="pull-right">
+            	<button type="submit" form="form-featured" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a onclick="location = '{{ cancel }}'" data-toggle="tooltip" data-original-title="Cancel" class="btn btn-default"><i class="fa fa-reply"></i>&nbsp;</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+    	{% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if success %}
+		    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+		      <button type="button" class="close" data-dismiss="alert">&times;</button>
+		    </div>
+	    {% endif %}
+    	<div class="panel panel-default">
+    		<div class="panel-heading">
+		        <h3 class="panel-title"><i class="fa fa-gears"></i> {{ text_config }}</h3>
+		        <div class="pull-right">
+                    <div class="storeSwitcherWidget">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">&nbsp;&nbsp;{{ store.name }}{% if store.store_id == 0 %} <strong>({{ text_default }})</strong> {% endif %}&nbsp;<span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% for st in stores %}
+                                <li><a href="index.php?route={{ modulePath }}/settings&store_id={{ st.store_id }}&{{ token_addon }}">{{ st.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+	      	</div>
+	    	<div class="panel-body">
+	        	<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-featured" class="form-horizontal">
+	        		<ul class="nav nav-tabs mainMenuTabs" id="mainTabs" role="tablist">
+	        			<li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+	        			<li><a href="#tab-widget" data-toggle="tab">{{ tab_widget_setting }}</a></li>
+	        			<li><a href="#tab-listing" data-toggle="tab">{{ tab_listing_page_setting }}</a></li>
+	        			<li><a href="#tab-viewpage" data-toggle="tab">{{ tab_view_page_setting }}</a></li>
+	        		</ul>
+	        		<div class="tab-content">
+            			<div class="tab-pane active" id="tab-general">
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_module_status }} <span data-toggle="tooltip" title="{{ text_module_status_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select id="Checker" name="{{ moduleName }}[Enabled]" class="form-control">
+						                  <option value="yes" {{ moduleData.Enabled  and  moduleData.Enabled  == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                  <option value="no"  {{ (moduleData.Enabled and moduleData.Enabled == 'no') or moduleData.Enabled is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_multiple_bundles }} <span data-toggle="tooltip" title="{{ text_multiple_bundles_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[MultipleBundles]" class="form-control">
+						                  <option value="no" {{ (moduleData.MultipleBundles and moduleData.MultipleBundles == 'no') or moduleData.MultipleBundles is empty ? 'selected=selected' : '' }}>{{ text_add_the_discount_once }}</option>
+						                  <option value="yes" {{ moduleData.MultipleBundles and moduleData.MultipleBundles == 'yes' ? 'selected=selected' : '' }}>{{ text_add_discount_every_time }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_regard_taxes_on_discount }} <span data-toggle="tooltip" title="{{ text_regard_taxes_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[DiscountTaxation]" class="form-control">
+						                  <option value="no"  {{ (moduleData.DiscountTaxation and moduleData.DiscountTaxation == 'no') or moduleData.DiscountTaxation is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						                  <option value="yes" {{ moduleData.DiscountTaxation and moduleData.DiscountTaxation == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+			        	</div>
+			        	<div class="tab-pane" id="tab-widget">
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_widget_title }} <span data-toggle="tooltip" title="{{ text_widget_title_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				{% for language in languages %} 
+						                <div class="input-group">
+						                  	<span class="input-group-addon"><img src="{{ language.flag_url }}" style="margin-top:-3px;" title="{{ language.name }}" /> {{ language.name }}</span>
+						                  	<input name="{{ moduleName }}[WidgetTitle][{{ language.language_id }}]" class="form-control" type="text" value="{{ moduleData.WidgetTitle[language.language_id] ? moduleData.WidgetTitle[language.language_id] : '' }}" />
+					                	</div>
+						            {% endfor %} 
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_wrap_in_widget }} <span data-toggle="tooltip" title="{{ text_wrap_in_widget_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[WrapInWidget]" class="form-control">
+						                <option value="yes" {{ moduleData.WrapInWidget and moduleData.WrapInWidget == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                <option value="no" {{ (moduleData.WrapInWidget and moduleData.WrapInWidget == 'no') or moduleData.WrapInWidget is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_bundles_in_widget }} <span data-toggle="tooltip" title="{{ text_bundles_in_widget_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<input type="number" name="{{ moduleName }}[WidgetLimit]" class="form-control" value="{{ moduleData.WidgetLimit or moduleData.WidgetLimit == '0' ? moduleData.WidgetLimit : '2' }}" /> 
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_display_type }} <span data-toggle="tooltip" title="{{ text_display_type_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[DisplayType]" class="form-control">
+						                <option value="default" {{ moduleData.DisplayType and moduleData.DisplayType == 'default' ? 'selected=selected' : '' }}>{{ text_default }}</option>
+						                <option value="random" {{ moduleData.DisplayType and moduleData.DisplayType == 'random' ? 'selected=selected' : '' }}>{{ text_random }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_show_random_bundles }} <span data-toggle="tooltip" title="{{ text_show_random_bundles_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[ShowRandomBundles]" class="form-control">
+						                <option value="yes" {{ moduleData.ShowRandomBundles and moduleData.ShowRandomBundles == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						               	<option value="no" {{ (moduleData.ShowRandomBundles and moduleData.ShowRandomBundles == 'no') or moduleData.ShowRandomBundles is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_bundle_description }} <span data-toggle="tooltip" title="{{ text_bundle_description_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[DescriptionWidgetEnabled]" class="form-control">
+						                <option value="yes" {{ moduleData.DescriptionWidgetEnabled and moduleData.DescriptionWidgetEnabled == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                <option value="no"  {{ (moduleData.DescriptionWidgetEnabled and moduleData.DescriptionWidgetEnabled == 'no') or moduleData.DescriptionWidgetEnabled is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_show_all_bundles_button }} <span data-toggle="tooltip" title="{{ text_show_all_bundles_button_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select name="{{ moduleName }}[ShowAllBundlesButton]" class="form-control">
+						                <option value="yes" {{ moduleData.ShowAllBundlesButton and moduleData.ShowAllBundlesButton == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                <option value="no"  {{ (moduleData.ShowAllBundlesButton and moduleData.ShowAllBundlesButton == 'no') or moduleData.ShowAllBundlesButton is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_picture_width_height }} <span data-toggle="tooltip" title="{{ text_in_pixels_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<div class="input-group">
+						              	<span class="input-group-addon">{{ text_width }}&nbsp;</span>
+					                	<input type="text" name="{{ moduleName }}[WidgetWidth]" class="form-control" value="{{ moduleData.WidgetWidth ? moduleData.WidgetWidth : '80' }}" />
+					              		<span class="input-group-addon">{{ text_px }}</span>
+						            </div><br>
+						            <div class="input-group">
+						              	<span class="input-group-addon">{{ text_height }}</span>
+						                <input type="text" name="{{ moduleName }}[WidgetHeight]" class="form-control" value="{{ moduleData.WidgetHeight ? moduleData.WidgetHeight : '80' }}" />
+						              	<span class="input-group-addon">{{ text_px }}</span>
+						            </div>
+			        			</div>
+			        		</div>
+			        	</div>
+			        	<div class="tab-pane" id="tab-listing">
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_listing_url }} <span data-toggle="tooltip" title="{{ text_listing_url_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<a href="{{ store.url~"index.php?route=" ~ modulePath ~ "/listing" }}" target="_blank" style="display: block;padding-top: 9px;">{{ store.url~"index.php?route=" ~ modulePath ~ "/listing" }}</a>
+			        			</div>
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_bundles_per_page }} <span data-toggle="tooltip" title="{{ text_bundles_per_page_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<input type="number" name="{{ moduleName }}[ListingLimit]" class="form-control" value="{{ moduleData.ListingLimit or moduleData.ListingLimit == '0' ? moduleData.ListingLimit : '10' }}" />
+			        			</div>
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_bundle_description }} <span data-toggle="tooltip" title="{{ text_bundle_description_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select id="LinkChecker" name="{{ moduleName }}[DescriptionListingEnabled]" class="form-control">
+						                <option value="yes" {{ moduleData.DescriptionListingEnabled and moduleData.DescriptionListingEnabled == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                <option value="no" {{ (moduleData.DescriptionListingEnabled and moduleData.DescriptionListingEnabled ==  'no') or moduleData.DescriptionListingEnabled is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_picture_width_height }} <span data-toggle="tooltip" title="{{ text_in_pixels_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<div class="input-group">
+						              	<span class="input-group-addon">{{ text_width }}&nbsp;</span>
+						                <input type="text" name="{{ moduleName }}[ListingPictureWidth]" class="form-control" value="{{ moduleData.ListingPictureWidth ? moduleData.ListingPictureWidth : '120' }}" />
+						              	<span class="input-group-addon">{{ text_px }}</span>
+						            </div><br />
+						            <div class="input-group">
+						              	<span class="input-group-addon">{{ text_height }}</span>
+						                <input type="text" name="{{ moduleName }}[ListingPictureHeight]" class="form-control" value="{{ moduleData.ListingPictureHeight ? moduleData.ListingPictureHeight : '120' }}" />
+						              	<span class="input-group-addon">{{ text_px }}</span>
+						            </div>
+			        			</div>
+			        		</div>
+			        	</div>
+			        	<div class="tab-pane" id="tab-viewpage">
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_bundle_description }} <span data-toggle="tooltip" title="{{ text_bundle_description_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<select id="LinkChecker" name="{{ moduleName }}[DescriptionViewEnabled]" class="form-control">
+						                <option value="yes" {{ moduleData.DescriptionViewEnabled and moduleData.DescriptionViewEnabled == 'yes' ? 'selected=selected' : '' }}>{{ text_enabled }}</option>
+						                <option value="no"  {{ (moduleData.DescriptionViewEnabled and moduleData.DescriptionViewEnabled == 'no') or moduleData.DescriptionViewEnabled is empty ? 'selected=selected' : '' }}>{{ text_disabled }}</option>
+						            </select>
+			        			</div>
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="col-sm-3 control-label" for="input-status">{{ text_picture_width_height }} <span data-toggle="tooltip" title="{{ text_in_pixels_helper }}"></span></label>
+			        			<div class="col-sm-9">
+			        				<div class="input-group">
+						              	<span class="input-group-addon">{{ text_width }}&nbsp;</span>
+						                <input type="text" name="{{ moduleName }}[ViewWidth]" class="form-control" value="{{ moduleData.ViewWidth ? moduleData.ViewWidth : '80' }}" />
+						              	<span class="input-group-addon">{{ text_px }}</span>
+						            </div><br />
+						            <div class="input-group">
+						              	<span class="input-group-addon">{{ text_height }}</span>
+						                <input type="text" name="{{ moduleName }}[ViewHeight]" class="form-control" value="{{ moduleData.ViewHeight ? moduleData.ViewHeight : '80' }}" />
+						              	<span class="input-group-addon">{{ text_px }}</span>
+						            </div>
+			        			</div>
+			        		</div>
+			        	</div>
+			        </div>
+	        	</form>
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<script type="text/javascript"><!--
+// Remember Tab State
+$(function() {
+	$('#mainTabs a:first').tab('show'); // Select first tab
+	$('#langtabs a:first').tab('show');
+	if (window.localStorage && window.localStorage['currentTab']) {
+		$('.mainMenuTabs a[href="'+window.localStorage['currentTab']+'"]').tab('show');
+	}
+	
+	$('.mainMenuTabs a[data-toggle="tab"]').click(function() {
+		if (window.localStorage) {
+			window.localStorage['currentTab'] = $(this).attr('href');
+		}
+	});
+});
+//--></script>
+{{ footer }}

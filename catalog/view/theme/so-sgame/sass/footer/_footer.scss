@@ -1,0 +1,41 @@
+
+footer #collapse-footer{
+	display: block;
+}
+.footer-container{
+	clear: both;
+}
+footer .so-page-builder .container{
+    padding: 0 15px;
+}
+footer .copyright a{
+	color: #222;
+}
+footer a:hover{
+	color: $linkColor;
+}
+
+.typefooter-2,
+.typefooter-1{
+	.newsletter-footer1 .newsletter .block_content form.signup .subcribe button{
+		&:hover{
+			background-color: lighten($linkColor,10%);
+		}
+	}
+	.box-footer .modcontent ul li a:hover{
+		color: $linkColor;
+	}
+	.infos-footer ul li:hover::before{
+		background-color: $background;
+	}
+}
+
+.typefooter-4,
+.typefooter-3{
+	.box-footer .modcontent ul li a:hover{
+		color: $linkColor;
+	}
+	.infos-footer ul li:hover::before{
+		background-color: $background;
+	}
+}

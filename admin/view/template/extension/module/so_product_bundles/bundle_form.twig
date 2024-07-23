@@ -1,0 +1,476 @@
+{{ header }}
+{{ column_left }}
+
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-product" name="save_stay" value="1" data-toggle="tooltip" title="{{ text_save_stay }}" class="btn btn-success"><i class="fa fa-save"></i> {{ text_save_stay }}</button>
+                <button type="submit" form="form-product" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+            </div>
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-product" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-status">{{ text_bundle_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="bundle[status]" class="form-control">
+                                <option value="1" {{ bundle.status == '1' ? 'selected="selected"' : '' }}>{{ text_enabled }}</option>
+                                <option value="0" {{ bundle.status == '0' ? 'selected="selected"' : '' }}>{{ text_disabled }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-name"><span data-toggle="tooltip" title="{{ text_bundle_name_helper }}">{{ text_bundle_name }}</span></label>
+                        <div class="col-sm-10">
+                            {% for language in languages %}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><img src="{{ language.flag_url }}"/></span>
+                                    <input type="text" class="form-control" name="bundle[name][{{ language.language_id }}]" value="{{ bundle.name[language.language_id] ? bundle.name[language.language_id] : '' }}" />
+                                </div>
+                                {% if error_name[language.language_id] %}
+                                    <div class="text-danger">{{ error_name[language.language_id] }}</div>
+                                {% endif %}
+                                <br />
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-desc"><span data-toggle="tooltip" title="{{ text_bundle_description_helper }}">{{ text_bundle_description }}</span></label>
+                        <div class="col-sm-10">
+                            <ul class="nav nav-tabs" id="input-desc" role="tablist">
+                                {% for key, language in languages %} 
+                                    <li {{ key == 0 ? 'class="active"' : '' }}><a href="#lang-bundle-{{ language.language_id }}" role="tab" data-toggle="tab"><img src="{{ language.flag_url }}" title="{{ language.name }}"/> {{ language.name }}</a></li>
+                                {% endfor %} 
+                            </ul>
+                            <div class="tab-content">
+                                {% for key, language in languages %} 
+                                    <div class="tab-pane {{ key }} {{ key == 0 ? 'active' : '' }}" id="lang-bundle-{{ language.language_id }}">
+                                        <textarea data-toggle="summernote" data-lang="{{ summernote }}" class="form-control bundle-description" name="bundle[description][{{ language.language_id }}]">{{ bundle.description[language.language_id] ? bundle.description[language.language_id] : '' }}</textarea>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-addproduct"><span data-toggle="tooltip" title="{{ text_bundled_products_helper }}">{{ text_bundled_products }}</span></label>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_product_add_label }}</span>
+                                <input type="text" name="productInput" class="form-control" value="" placeholder="Typing the product name" />
+                            </div>
+                            {% if error_products %}
+                                <div class="text-danger">{{ error_products }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_quantity_label }}</span>
+                                <input type="text" name="quantityInput" class="form-control" value="1" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <a href="javascript:void(0)" onClick="addProductToBundle(this);" class="btn btn-primary">{{ text_add_product }}</a>
+                        </div>
+                        <br><br><br>
+                        <div class="cl-xs-12">
+                            <div class="list_product_bundles">
+                                {% if bundle.products|length > 0 %}
+                                    {% for bundle_product in bundle.products %} 
+                                        <div class="col-sm-6 col-md-3 col-lg-2">
+                                            <input type="hidden" name="bundle[products][]" value="{{ bundle_product.product_id }}" />    
+                                            <a onClick="removeProductFromBundle(this, '{{ bundle_product.price }}');" class="btn btn-xs btn-default removeProductFromBundle" role="button"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                            <div class="thumbnail">
+                                                <img src="{{ bundle_product.image }}" alt="{{ bundle_product.name }}">
+                                                <div class="caption text-center">
+                                                    <h3>{{ bundle_product.options ? '<i class="fa fa-tags" style="color:#ab9a87;font-size:13px;"></i>' : '' }}&nbsp;{{ bundle_product.name }}</h3>
+                                                    <p>{{ text_price }}: {{ bundle_product.price }}{{ config_currency }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    {% endfor %} 
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-name"><span data-toggle="tooltip" title="{{ text_bundle_show_on_helper }}">{{ text_bundle_show_on }}</span></label>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_products }}</span>
+                                <input type="text" name="productShowInput" class="form-control" value="" />
+                            </div><br>
+                            <div class="list_product_bundles_show well well-sm">
+                                {% if bundle.products_show|length > 0 %}
+                                    {% for bundle_product_show in bundle.products_show %} 
+                                        <span class="label label-lg label-primary label-product-{{ bundle_product_show.product_id }}">{{ bundle_product_show.name }}<i class="fa fa-times-circle removeIcon text-right"></i><input type="hidden" name="bundle[products_show][]" value="{{ bundle_product_show.product_id }}" /></span>
+                                    {% endfor %} 
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_categories }}</span>
+                                <input type="text" name="categoryShowInput" class="form-control" value="" />
+                            </div><br>
+                            <div class="list_categories_bundles_show well well-sm">
+                                {% if bundle.categories_show|length > 0 %}
+                                    {% for bundle_category_show in bundle.categories_show %} 
+                                        <span class="label label-lg label-primary label-category-{{ bundle_category_show.category_id }}">{{ bundle_category_show.name }}<i class="fa fa-times-circle removeIcon text-right"></i><input type="hidden" name="bundle[categories_show][]" value="{{ bundle_category_show.category_id }}" /></span>
+                                    {% endfor %} 
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-name"><span data-toggle="tooltip" title="{{ text_bundle_discount_options_helper }}">{{ text_bundle_discount_options }}</span></label>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_discount_type }}</span>
+                                <select name="bundle[discount_type]" class="form-control discountType">
+                                    <option value="1" {{ bundle.discount_type == '1' ? 'selected="selected"' : '' }}>{{ text_fixed_price }}</option>
+                                    <option value="2" {{ bundle.discount_type == '2' ? 'selected="selected"' : '' }}>{{ text_percentage }}</option>
+                                </select>
+                            </div><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ text_discount_value }}</span>
+                                <input type="text" class="form-control bundlePriceInput" name="bundle[discount_value]" value="{{ bundle.discount_value ? bundle.discount_value : '' }}" />
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <h4 style="line-height: 33px;">{{ text_total_product_price }}<span class="label label-default"><span class='total-products-price'>{{ bundle.price }}</span> {{ config_currency }}</span></h4>
+                            <br>
+                            <h4 style="line-height: 19px;">{{ text_price_with_discount }}<span class="label label-default"><span class='total-bundle-price'>{{ bundle.bundled_price }}</span> {{ config_currency }}</span></h4>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-name"><span data-toggle="tooltip" title="{{ text_bundle_customer_group_helper }}">{{ text_bundle_customer_group }}</span></label>
+                        <div class="col-sm-3">
+                            <div class="well well-sm" style="max-height: 150px; overflow: auto;">
+                                <div class="checkbox">
+                                    <label><input name="bundle[customer_group][]" type="checkbox" {{ ('-1' in bundle['customer_group']) ? 'checked="checked"' : '' }} value="-1"> {{ text_bundle_guest_customers }}</label>
+                                </div>
+                                {% for customer_group in customer_groups %} 
+                                    <div class="checkbox">
+                                        <label><input name="bundle[customer_group][]" type="checkbox" {{ (customer_group['customer_group_id'] in bundle['customer_group']) ? 'checked="checked"' : '' }} value="{{ customer_group['customer_group_id'] }}"> {{ customer_group['name'] }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-sort_order"><span data-toggle="tooltip" title="{{ text_bundle_sort_order_helper }}">{{ text_bundle_sort_order }}</span></label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="bundle[sort_order]" value="{{ bundle.sort_order ? bundle.sort_order : '0' }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-date_available"><span data-toggle="tooltip" title="{{ text_date_available_helper }}">{{ text_date_available }}</span></label>
+                        <div class="col-sm-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control date" data-date-format="YYYY-MM-DD" name="bundle[date_available]" value="{{ bundle.date_available ? bundle.date_available : date('Y-m-d') }}" />
+                                <span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+    <link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+    <link href="view/stylesheet/{{ moduleName }}/styles.css" rel="stylesheet" />
+    <script type="text/javascript" src="view/javascript/summernote/summernote-image-attributes.js"></script>
+    <script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+
+    <script type="text/javascript"><!--
+        var chosenProduct = "";
+        var chosenProductShow = "";
+        var chosenCategoryShow = "";
+
+        $('input[name=\'productInput\']').autocomplete({
+            delay: 500,
+            source: function(request, response) {
+                $.ajax({
+                    url: 'index.php?route={{ modulePath }}/autocomplete_products&user_token={{ user_token }}&store_id={{ store.store_id }}' + '&filter_name=' +  encodeURIComponent(request) ,
+                    dataType: 'json',
+                    success: function(json) {       
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name'],
+                                value: item['product_id'],
+                                price: item['price'],
+                                image: item['image'],
+                                special: item['special'],
+                                option: item['option']
+                            }
+                        }));
+                    }
+                });
+            }, 
+            select: function(item) {
+                chosenProduct = item;
+
+                $(this).val(item['label']); 
+            }
+        }); 
+    
+        $('.date').datetimepicker({
+            pickTime: false
+        });
+
+        function addProductToBundle() {
+            var quantity = $('input[name=\'quantityInput\']').val();
+            var textOption = '';
+            var realPrice = 0;
+            var html = '';
+
+            if (chosenProduct != "") {
+                if (chosenProduct['special'] == 0) { 
+                    realPrice = chosenProduct['price'] 
+                } else {
+                    realPrice = chosenProduct['special'];
+                }
+                
+                if (chosenProduct['option']!="") {
+                    textOption = ' <i class="fa fa-tags" style="color:#ab9a87;font-size:13px;"></i> ';  
+                }
+                
+                html += '<div class="col-sm-6 col-md-3 col-lg-2 hidden-div" style="display:none;">';
+                    html += '<input type="hidden" name="bundle[products][]" value="' + chosenProduct['value'] +'" />';    
+                    html += '<a onClick="removeProductFromBundle(this, \'' + realPrice + '\');" class="btn btn-xs btn-default pull-right" role="button"><i class="fa fa-times-circle" aria-hidden="true"></i></a>';
+                    html += '<div class="thumbnail">';
+                        html += '<img src="' + chosenProduct['image'] + '" alt="' + chosenProduct['label'] + '">';
+                        html += '<div class="caption text-center">';
+                            html += '<h3>' + textOption + chosenProduct['label'] + '</h3>';
+                            html += '<p> {{ text_price }}: ' + realPrice + ' {{ config_currency }}</p>';
+                        html += '</div>';
+                    html += '</div>';
+                    html += '<div class="clearfix"></div>';
+                html += '</div>';
+                
+                var totalProductsPrice = $('.total-products-price').html().replace(/,/g, '');
+                if (totalProductsPrice.length == 0) totalProductsPrice = '0';
+                
+                for (i=0; i < quantity; i++) {
+                    var newBundlePrice = (parseFloat(realPrice) + parseFloat(totalProductsPrice)).toFixed(2);
+                    $('.total-products-price').html(newBundlePrice);
+                    
+                    totalProductsPrice = newBundlePrice;
+                    if (totalProductsPrice.length == 0) totalProductsPrice = '0';
+                    
+                    $('.bundlePriceInput').trigger('keyup');
+                    
+                    // Adding the product in the bundle set
+                    $('.list_product_bundles').append(html);
+                    $('.list_product_bundles .hidden-div').show(500);
+                    $('.list_product_bundles .hidden-div').removeClass('hidden-div');
+                }
+                
+                $('input[name=\'productInput\']').val('');
+                $('input[name=\'quantityInput\']').val('1');
+                chosenProduct = '';
+            }
+        }
+
+        function removeProductFromBundle(selector, product_price) {
+            $(selector).parent().addClass('remove-div');
+            $(selector).parent().hide(500);
+            
+            // Updating the price of the bundle
+            var totalProductsPrice = $('.total-products-price').html().replace(/,/g, '');
+            if (totalProductsPrice.length == 0) totalProductsPrice = '0';
+            var newBundlePrice = (parseFloat(totalProductsPrice) - parseFloat(product_price)).toFixed(2);
+            $('.total-products-price').html(newBundlePrice);
+            $('.bundlePriceInput').trigger('keyup');
+            
+            setTimeout(function() {
+               $(selector).parent().remove(); 
+            }, 500);
+        }
+
+        var calcDiscount = function () {
+            $('.bundlePriceInput').on('keyup',function() {
+                var totalProductsPrice = $('.total-products-price').html().replace(/,/g, '');
+                var enteredDiscountPrice = $('.bundlePriceInput').val();
+                var discountType = $('.discountType').val();
+                var discountedPrice = '0';
+                if (enteredDiscountPrice.length == 0) enteredDiscountPrice = '0';
+                
+                if (discountType == '2') { 
+                    if (parseFloat(totalProductsPrice)) {
+                        var enteredPercentage = enteredDiscountPrice/100;
+                        var discountValue = enteredPercentage*totalProductsPrice;
+
+                        discountedPrice = (parseFloat(totalProductsPrice) - parseFloat(discountValue)).toFixed(2);
+
+                        if (isNaN(discountedPrice)) {
+                            discountedPrice = totalProductsPrice;
+                        }
+                        
+                        if (discountedPrice < 0) {
+                            discountedPrice = parseFloat(0.0);
+                        }
+                        
+                        $('.total-bundle-price').html(parseFloat(discountedPrice).toFixed(2));
+                    }        
+                } else {
+                    if (parseFloat(totalProductsPrice)) {
+                        discountedPrice = (parseFloat(totalProductsPrice) - parseFloat(enteredDiscountPrice)).toFixed(2);
+
+                        if (isNaN(discountedPrice)) {
+                            discountedPrice = totalProductsPrice;
+                        }
+                        
+                        if (discountedPrice < 0) {
+                            discountedPrice = parseFloat(0.0);
+                        }
+
+                        $('.total-bundle-price').html(parseFloat(discountedPrice).toFixed(2));
+                    }    
+                }
+                
+            });
+            
+            $('.discountType').on('change', function() {
+                $('.bundlePriceInput').trigger('keyup');        
+            });
+            $('.discountType').trigger('change');
+        }
+
+        var productAutocomplete = function () {
+            $('input[name=\'productShowInput\']').autocomplete({
+                delay: 500,
+                source: function(request, response) {
+                    $.ajax({
+                        url: 'index.php?route={{ modulePath }}/autocomplete_products&user_token={{ user_token }}&store_id={{ store.store_id }}&filter_name=' +  encodeURIComponent(request) ,
+                        dataType: 'json',
+                        success: function(json) {       
+                            response($.map(json, function(item) {
+                                return {
+                                    label: item['name'],
+                                    value: item['product_id'],
+                                    price: item['price'],
+                                    image: item['image'],
+                                    special: item['special'],
+                                    option: item['option']
+                                }
+                            }));
+                        }
+                    });
+                }, 
+                select: function(item) {
+                    chosenProductShow = item;
+                    
+                    var html = '';
+
+                    if (chosenProductShow != "") {
+                        $('.label-product-' + chosenProductShow['value']).remove();
+
+                        html += '<span class="label label-lg label-primary label-product-' + chosenProductShow['value'] + ' hidden-div" style="display:none;">' + chosenProductShow['label'];
+                        html += ' <i class="fa fa-times-circle removeIcon"></i>';
+                        html += '<input type="hidden" name="bundle[products_show][]" value="' + chosenProductShow['value'] +'" />';    
+                        html += '</span>';
+
+                        $('.list_product_bundles_show').append(html);
+                        $('.list_product_bundles_show .hidden-div').show(500);
+                        $('.list_product_bundles_show .hidden-div').removeClass('hidden-div');
+
+                        $('input[name=\'productShowInput\']').val('');
+                        chosenProductShow = '';
+                    }
+                    
+                    $(this).val('');    
+                }
+            }); 
+        }
+
+        var categoryAutocomplete = function () {
+            $('input[name=\'categoryShowInput\']').autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: 'index.php?route={{ modulePath }}/autocomplete_categories&user_token={{ user_token }}&store_id={{ store.store_id }}&filter_name=' +  encodeURIComponent(request),
+                        dataType: 'json',
+                        success: function(json) {       
+                            response($.map(json, function(item) {
+                                return {
+                                    label: item['name'],
+                                    value: item['category_id']
+                                }
+                            }));
+                        }
+                    });
+                }, 
+                select: function(item) {
+                    chosenCategoryShow = item;
+
+                    var html = '';
+
+                    if (chosenCategoryShow != "") {
+                        $('.label-category-' + chosenCategoryShow['value']).remove();
+
+                        html += '<span class="label label-lg label-primary label-category-' + chosenCategoryShow['value'] + ' hidden-div" style="display:none;">' + chosenCategoryShow['label'];
+                        html += ' <i class="fa fa-times-circle removeIcon"></i>';
+                        html += '<input type="hidden" name="bundle[categories_show][]" value="' + chosenCategoryShow['value'] +'" />';    
+                        html += '</span>';
+
+                        $('.list_categories_bundles_show').append(html);
+                        $('.list_categories_bundles_show .hidden-div').show(500);
+                        $('.list_categories_bundles_show .hidden-div').removeClass('hidden-div');
+
+                        $('input[name=\'categoryShowInput\']').val('');
+                        chosenCategoryShow = '';
+                    }
+
+                    $(this).val('');    
+                }
+            });
+            
+        }
+
+        var removeProductBundlesShowOn = function () {
+            $('.list_product_bundles_show').delegate('.removeIcon', 'click', function() {
+                $(this).parent().remove();
+            });
+            
+            $('.list_categories_bundles_show').delegate('.removeIcon', 'click', function() {
+                $(this).parent().remove();
+            });
+        }
+
+        calcDiscount();
+        productAutocomplete();
+        categoryAutocomplete();
+        removeProductBundlesShowOn();
+    //--></script>
+</div>
+
+{{ footer }}
