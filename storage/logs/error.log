@@ -1,3 +1,6 @@
 2024-07-23 20:52:56 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
 2024-07-23 20:52:56 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
 2024-07-23 20:53:00 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
+2024-07-24 13:18:30 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
+2024-07-24 13:18:30 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
+2024-07-24 13:38:32 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: Interlace handling should be turned on when using png_read_image in C:\OSPanel\domains\gamer2\system\library\image.php on line 45
