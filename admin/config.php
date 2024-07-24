@@ -1,18 +1,18 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://gamer2/admin/');
-define('HTTP_CATALOG', 'http://gamer2/');
+define('HTTP_SERVER', 'https://demo-shop.io2b.eu/admin/');
+define('HTTP_CATALOG', 'https://demo-shop.io2b.eu/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://gamer2/admin/');
-define('HTTPS_CATALOG', 'http://gamer2/');
+define('HTTPS_SERVER', 'https://demo-shop.io2b.eu/admin/');
+define('HTTPS_CATALOG', 'https://demo-shop.io2b.eu/');
 
 // DIR
-define('DIR_APPLICATION', 'C:/OSPanel/domains/gamer2/admin/');
-define('DIR_SYSTEM', 'C:/OSPanel/domains/gamer2/system/');
-define('DIR_IMAGE', 'C:/OSPanel/domains/gamer2/image/');
-define('DIR_STORAGE', 'C:/OSPanel/domains/gamer2/storage/');
-define('DIR_CATALOG', 'C:/OSPanel/domains/gamer2/catalog/');
+define('DIR_APPLICATION', '/home/forge/demo-shop.io2b.eu/admin/');
+define('DIR_SYSTEM', '/home/forge/demo-shop.io2b.eu/system/');
+define('DIR_IMAGE', '/home/forge/demo-shop.io2b.eu/image/');
+define('DIR_STORAGE', '/home/forge/demo-shop.io2b.eu/storage/');
+define('DIR_CATALOG', '/home/forge/demo-shop.io2b.eu/catalog/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
@@ -25,10 +25,10 @@ define('DIR_UPLOAD', DIR_STORAGE . 'upload/');
 
 // DB
 define('DB_DRIVER', 'mysqli');
-define('DB_HOSTNAME', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_DATABASE', 'gamer2');
+define('DB_HOSTNAME', 'localhost:3306');
+define('DB_USERNAME', 'demo_shop');
+define('DB_PASSWORD', 'demoshopdemoshop');
+define('DB_DATABASE', 'demo_shop');
 define('DB_PORT', '3306');
 define('DB_PREFIX', 'oc_');
 
